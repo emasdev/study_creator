@@ -23,8 +23,8 @@ export default function ListaEstudios() {
       <Table size="sm">
         <Thead>
           <Tr>
-            <Th>Paciente</Th>
             <Th>Estudio</Th>
+            <Th>Doctor</Th>
             <Th>Fecha</Th>
           </Tr>
         </Thead>
