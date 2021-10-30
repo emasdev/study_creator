@@ -4,6 +4,17 @@ import { Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
 import { useFirestore } from '../hooks/useFirestore';
 
 export default function ListaEstudios() {
+  const db = useFirestore();
+  const estudios = db.estudios;
+
+  useEffect(() => {
+    if (!estudios) {
+      db.readDocuments('estudios').then(documents => {
+        console.log('estudios cargados');
+      });
+    }
+    return () => {};
+  }, []);
   return (
     <>
       <Text fontWeight="bold" mb={4}>
@@ -18,21 +29,17 @@ export default function ListaEstudios() {
           </Tr>
         </Thead>
         <Tbody>
-          <Tr>
-            <Td>Paciente A</Td>
-            <Td>Estudio B</Td>
-            <Td>24-Oct-2021</Td>
-          </Tr>
-          <Tr>
-            <Td>Paciente A.2</Td>
-            <Td>Estudio B.2</Td>
-            <Td>26-Oct-2021</Td>
-          </Tr>
-          <Tr>
-            <Td>Paciente A.3</Td>
-            <Td>Estudio B.3</Td>
-            <Td>28-Nov-2021</Td>
-          </Tr>
+          {estudios &&
+            estudios.map(doc => {
+              const estudio = doc.data;
+              return (
+                <Tr key={doc.id}>
+                  <Td>{estudio.nombre}</Td>
+                  <Td>{estudio.doctor}</Td>
+                  <Td>{new Date(estudio.fecha).toString()}</Td>
+                </Tr>
+              );
+            })}
         </Tbody>
       </Table>
     </>

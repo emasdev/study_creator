@@ -5,18 +5,20 @@ import {
   Input,
   Select,
   Button,
+  Alert,
+  AlertIcon,
 } from '@chakra-ui/react';
 import { useFirestore } from '../hooks/useFirestore';
 import { useForm } from 'react-hook-form';
 
 export default function UploadEstudio() {
   const db = useFirestore();
-  const [docs, setDocs] = useState(null);
+  const doctores = db.doctores;
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm();
   const onSubmit = async data => {
     const docData = {
@@ -31,14 +33,23 @@ export default function UploadEstudio() {
   console.log(errors);
 
   useEffect(() => {
-    db.readDocuments('usuarios').then(documents => {
-      setDocs(documents);
-    });
+    if (!doctores) {
+      db.readDocuments('usuarios').then(documents => {
+        console.log('doctores cargados');
+      });
+    }
+
     return () => {};
   }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      {isSubmitSuccessful && (
+        <Alert status="success">
+          <AlertIcon />
+          Se subio el estudio con éxito
+        </Alert>
+      )}
       <FormControl>
         <FormLabel>Nombre</FormLabel>
         <Input
@@ -57,8 +68,8 @@ export default function UploadEstudio() {
           placeholder="Seleccionar Doctor"
           {...register('doctor', { required: true })}
         >
-          {docs &&
-            docs.map(doc => {
+          {doctores &&
+            doctores.map(doc => {
               const doctor = doc.data;
               const nombre = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
               return (
