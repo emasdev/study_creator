@@ -14,12 +14,12 @@ const config = {
 
 const firebaseApp = initializeApp(config);
 const auth = getAuth(firebaseApp);
-const firestore = getFirestore(firebaseApp);
+const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
 const firebase = {
   auth,
-  firestore,
+  db,
   storage,
 };
 

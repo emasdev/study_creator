@@ -1,14 +1,7 @@
-import React from 'react';
-import {
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Text,
-} from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
+
+import { useFirestore } from '../hooks/useFirestore';
 
 export default function ListaEstudios() {
   return (
