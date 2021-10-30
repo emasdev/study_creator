@@ -1,18 +1,7 @@
 import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import SimpleSidebar from './components/SimpleSidebar';
+import { ChakraProvider, theme } from '@chakra-ui/react';
 import { ProvideAuth } from './hooks/useAuth';
-import Main from './components/Main';
+import Main from './views/Main';
 
 function App() {
   return (

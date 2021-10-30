@@ -4,9 +4,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  FormHelperText,
   Button,
-  Text,
   Center,
   Heading,
 } from '@chakra-ui/react';
@@ -38,7 +36,6 @@ export default function Login() {
             type="email"
             {...register('email', { required: true, pattern: /^\S+@\S+$/i })}
           />
-          <FormHelperText>Esta es una prueba.</FormHelperText>
         </FormControl>
         <FormControl id="password">
           <FormLabel>Password</FormLabel>
@@ -46,7 +43,6 @@ export default function Login() {
             type="password"
             {...register('password', { required: true })}
           />
-          <FormHelperText>Ingresa cualquiera.</FormHelperText>
         </FormControl>
 
         <Button mt={4} type="submit">

@@ -13,6 +13,7 @@ export function ProvideAuth({ children }) {
 
 function useProvideAuth() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const auth = firebase.auth;
 
   const signin = (email, password) => {
@@ -44,14 +45,16 @@ function useProvideAuth() {
         console.log('no user in');
         setUser(false);
       }
+      setIsLoading(false);
     });
     // Cleanup subscription on unmount
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   // Return the user object and auth methods
   return {
     user,
+    isLoading,
     signin,
     signup,
     signout,
