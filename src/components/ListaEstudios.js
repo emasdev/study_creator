@@ -13,7 +13,7 @@ export default function ListaEstudios() {
         console.log('estudios cargados');
       });
     }
-    return () => {};
+    return () => { };
   }, []);
   return (
     <>
@@ -24,6 +24,7 @@ export default function ListaEstudios() {
         <Thead>
           <Tr>
             <Th>Estudio</Th>
+            <Th>Paciente</Th>
             <Th>Doctor</Th>
             <Th>Fecha</Th>
           </Tr>
@@ -34,8 +35,9 @@ export default function ListaEstudios() {
               const estudio = doc.data;
               return (
                 <Tr key={doc.id}>
-                  <Td>{estudio.nombre}</Td>
-                  <Td>{estudio.doctor}</Td>
+                  <Td>{estudio.nombre_estudio}</Td>
+                  <Td>{estudio.nombre_paciente}</Td>
+                  <Td>{estudio.nombre_estudio}</Td>
                   <Td>{new Date(estudio.fecha).toString()}</Td>
                 </Tr>
               );

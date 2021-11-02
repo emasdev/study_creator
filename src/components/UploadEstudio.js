@@ -21,13 +21,20 @@ export default function UploadEstudio() {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm();
   const onSubmit = async data => {
-    const docData = {
-      nombre: data.nombre,
-      doctor: data.doctor,
+
+    const doctorDoc = JSON.parse(data.doctor);
+    const doctor = doctorDoc.doctorData;
+    const nombre_doctor = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
+
+    const estudioDocData = {
+      nombre_estudio: data.nombre_estudio,
+      nombre_doctor: nombre_doctor,
+      nombre_estudio: data.nombre_estudio,
+      doctorId: doctorDoc.doctorId,
       fecha: Date.now(),
     };
 
-    const doc = await db.createDocument('estudios', docData);
+    const doc = await db.createDocument('estudios', estudioDocData);
     console.log(doc);
   };
   console.log(errors);
@@ -39,7 +46,7 @@ export default function UploadEstudio() {
       });
     }
 
-    return () => {};
+    return () => { };
   }, []);
 
   return (
@@ -51,11 +58,19 @@ export default function UploadEstudio() {
         </Alert>
       )}
       <FormControl>
-        <FormLabel>Nombre</FormLabel>
+        <FormLabel>Estudio</FormLabel>
         <Input
           type="text"
           placeholder="Nombre de estudio"
-          {...register('nombre', { required: true })}
+          {...register('nombre_estudio', { required: true })}
+        />
+      </FormControl>
+      <FormControl>
+        <FormLabel>Nombre de paciente</FormLabel>
+        <Input
+          type="text"
+          placeholder="Nombre de paciente"
+          {...register('nombre_paciente', { required: true })}
         />
       </FormControl>
       <FormControl>
@@ -72,8 +87,13 @@ export default function UploadEstudio() {
             doctores.map(doc => {
               const doctor = doc.data;
               const nombre = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
+              const value = {
+                doctorId: doc.id,
+                doctorData: doctor
+              }
+              const valueJSON = JSON.stringify(value);
               return (
-                <option value={nombre} key={doc.id}>
+                <option value={valueJSON} key={doc.id}>
                   {nombre}
                 </option>
               );
