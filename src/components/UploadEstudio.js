@@ -8,29 +8,46 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
-import { useFirestore } from '../hooks/useFirestore';
+import db from '../helpers/FirestoreService';
 import { useForm } from 'react-hook-form';
 
 export default function UploadEstudio() {
-  const db = useFirestore();
-  const doctores = db.doctores;
+
+  const [doctores, setDoctores] = useState(null);
+
+  useEffect(() => {
+    const loadDoctores = async () => {
+      try {
+        const docs = await db.readDocuments("usuarios");
+        setDoctores(docs);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    if (!doctores) {
+      loadDoctores();
+    }
+
+  }, [doctores])
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm();
+
   const onSubmit = async data => {
 
-    const doctorDoc = JSON.parse(data.doctor);
-    const doctor = doctorDoc.doctorData;
+    const doctorData = JSON.parse(data.doctor);
+    const doctor = doctorData.doctorData;
     const nombre_doctor = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
 
     const estudioDocData = {
-      nombre_estudio: data.nombre_estudio,
-      nombre_doctor: nombre_doctor,
-      nombre_estudio: data.nombre_estudio,
-      doctorId: doctorDoc.doctorId,
+      estudio: data.estudio,
+      doctor: nombre_doctor,
+      paciente: data.paciente,
+      usuarioId: doctorData.usuarioId,
       fecha: Date.now(),
     };
 
@@ -38,16 +55,6 @@ export default function UploadEstudio() {
     console.log(doc);
   };
   console.log(errors);
-
-  useEffect(() => {
-    if (!doctores) {
-      db.readDocuments('usuarios').then(documents => {
-        console.log('doctores cargados');
-      });
-    }
-
-    return () => { };
-  }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -62,7 +69,7 @@ export default function UploadEstudio() {
         <Input
           type="text"
           placeholder="Nombre de estudio"
-          {...register('nombre_estudio', { required: true })}
+          {...register('estudio', { required: true })}
         />
       </FormControl>
       <FormControl>
@@ -70,7 +77,7 @@ export default function UploadEstudio() {
         <Input
           type="text"
           placeholder="Nombre de paciente"
-          {...register('nombre_paciente', { required: true })}
+          {...register('paciente', { required: true })}
         />
       </FormControl>
       <FormControl>
@@ -85,11 +92,11 @@ export default function UploadEstudio() {
         >
           {doctores &&
             doctores.map(doc => {
-              const doctor = doc.data;
-              const nombre = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
+              const data = doc.data;
+              const nombre = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
               const value = {
-                doctorId: doc.id,
-                doctorData: doctor
+                usuarioId: doc.id,
+                data: data
               }
               const valueJSON = JSON.stringify(value);
               return (

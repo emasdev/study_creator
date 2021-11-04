@@ -1,20 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td, Text } from '@chakra-ui/react';
 
-import { useFirestore } from '../hooks/useFirestore';
+//import { FirestoreService } from '../helpers/FirestoreService';
 
-export default function ListaEstudios() {
-  const db = useFirestore();
-  const estudios = db.estudios;
+export default function ListaEstudios({ estudios }) {
+  //const db = FirestoreService();
 
-  useEffect(() => {
-    if (!estudios) {
-      db.readDocuments('estudios').then(documents => {
-        console.log('estudios cargados');
-      });
-    }
-    return () => { };
-  }, []);
   return (
     <>
       <Text fontWeight="bold" mb={4}>
