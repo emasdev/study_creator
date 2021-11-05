@@ -17,24 +17,40 @@ import db from "../helpers/FirestoreService"
 export default function Dashboard() {
   const auth = useAuth();
   const [estudios, setEstudios] = useState(null);
+  const [doctores, setDoctores] = useState(null);
+
+  const handleEstudiosChange = () => {
+    console.log("handle estudios change");
+    loadEstudios();
+  }
+
+  const handleLoadDoctores = () => {
+    loadDoctores();
+  }
+
+  const loadDoctores = async () => {
+    console.log("cargar doctores");
+    try {
+      const docs = await db.readDocuments("usuarios");
+      setDoctores(docs);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  const loadEstudios = async () => {
+    console.log("cargar estudios");
+    try {
+      const docs = await db.readDocuments("estudios");
+      setEstudios(docs);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
 
   useEffect(() => {
-
-    const loadEstudios = async () => {
-      try {
-        const docs = await db.readDocuments("estudios");
-        setEstudios(docs);
-        console.log(docs);
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
-    if (!estudios) {
-      loadEstudios();
-    }
-
-  }, [estudios])
+    loadEstudios();
+  }, [])
 
   return (
     <div>
@@ -51,7 +67,10 @@ export default function Dashboard() {
                 <ListaEstudios estudios={estudios} />
               </TabPanel>
               <TabPanel>
-                <UploadEstudio />
+                <UploadEstudio
+                  onUpload={handleEstudiosChange}
+                  onOpen={handleLoadDoctores}
+                  doctores={doctores} />
               </TabPanel>
             </TabPanels>
           </Tabs>

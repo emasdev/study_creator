@@ -16,9 +16,7 @@ const readDocuments = async collectionName => {
     let data = [];
     const querySnapshot = await getDocs(collection(db, collectionName));
     querySnapshot.forEach(doc => {
-      // doc.data() is never undefined for query doc snapshots
-      data.push({ id: doc.id, data: doc.data() });
-      //console.log(doc.id, ' => ', doc.data());
+      data.push({ ...doc.data(), id: doc.id });
     });
 
     return data;

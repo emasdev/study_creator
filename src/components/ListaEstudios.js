@@ -21,14 +21,13 @@ export default function ListaEstudios({ estudios }) {
         </Thead>
         <Tbody>
           {estudios &&
-            estudios.map(doc => {
-              const estudio = doc.data;
+            estudios.map(data => {
               return (
-                <Tr key={doc.id}>
-                  <Td>{estudio.nombre_estudio}</Td>
-                  <Td>{estudio.nombre_paciente}</Td>
-                  <Td>{estudio.nombre_estudio}</Td>
-                  <Td>{new Date(estudio.fecha).toString()}</Td>
+                <Tr key={data.id}>
+                  <Td>{data.estudio}</Td>
+                  <Td>{data.paciente}</Td>
+                  <Td>{data.doctor}</Td>
+                  <Td>{new Date(data.fecha).toString()}</Td>
                 </Tr>
               );
             })}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -11,25 +11,13 @@ import {
 import db from '../helpers/FirestoreService';
 import { useForm } from 'react-hook-form';
 
-export default function UploadEstudio() {
-
-  const [doctores, setDoctores] = useState(null);
+export default function UploadEstudio({ onUpload, onOpen, doctores }) {
 
   useEffect(() => {
-    const loadDoctores = async () => {
-      try {
-        const docs = await db.readDocuments("usuarios");
-        setDoctores(docs);
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
     if (!doctores) {
-      loadDoctores();
+      onOpen();
     }
-
-  }, [doctores])
+  }, [doctores, onOpen])
 
   const {
     register,
@@ -39,21 +27,21 @@ export default function UploadEstudio() {
 
   const onSubmit = async data => {
 
-    const doctorData = JSON.parse(data.doctor);
-    const doctor = doctorData.doctorData;
+    const doctor = JSON.parse(data.doctor);
     const nombre_doctor = `${doctor.nombre} ${doctor.apellido_paterno} ${doctor.apellido_materno}`;
 
     const estudioDocData = {
       estudio: data.estudio,
       doctor: nombre_doctor,
       paciente: data.paciente,
-      usuarioId: doctorData.usuarioId,
+      doctorId: doctor.id,
       fecha: Date.now(),
     };
 
-    const doc = await db.createDocument('estudios', estudioDocData);
-    console.log(doc);
+    await db.createDocument('estudios', estudioDocData);
+    onUpload();
   };
+
   console.log(errors);
 
   return (
@@ -91,16 +79,11 @@ export default function UploadEstudio() {
           {...register('doctor', { required: true })}
         >
           {doctores &&
-            doctores.map(doc => {
-              const data = doc.data;
+            doctores.map(data => {
               const nombre = `${data.nombre} ${data.apellido_paterno} ${data.apellido_materno}`;
-              const value = {
-                usuarioId: doc.id,
-                data: data
-              }
-              const valueJSON = JSON.stringify(value);
+              const dataJSON = JSON.stringify(data);
               return (
-                <option value={valueJSON} key={doc.id}>
+                <option value={dataJSON} key={data.id}>
                   {nombre}
                 </option>
               );
